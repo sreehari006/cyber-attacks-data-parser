@@ -46,81 +46,85 @@ def parse_ransomware_data(filename):
                         
                         # Split if the names if there is a new line character (Data quality)
                         unquie_name = name.split("\n")
-                        cursor.execute("""
-                            INSERT INTO ransomware (name, decryptor, screenshots, ms_detection, ms_info, sandbox, snort)
-                            VALUES (%s, %s, %s, %s, %s, %s, %s)
-                            RETURNING uid
-                        """, (unquie_name[0], decryptor, screenshots, ms_detection, ms_info, sandbox, snort))
+                        if unquie_name[0] != "":
+                            cursor.execute("""
+                                INSERT INTO ransomware (name, decryptor, screenshots, ms_detection, ms_info, sandbox, snort)
+                                VALUES (%s, %s, %s, %s, %s, %s, %s)
+                                RETURNING uid
+                            """, (unquie_name[0], decryptor, screenshots, ms_detection, ms_info, sandbox, snort))
+                        else:
+                            error_count += 1
+                            continue
 
                         # Fetch the generated uid
                         uid = cursor.fetchone()[0]
 
                         # Alias
-                        for _name in unquie_name[1:]:
-                            cursor.execute("""
-                                INSERT INTO ransomware_alias (parent_id, alias)
-                                VALUES (%s, %s)
-                            """, (uid, _name))
-
-                        for name in obj['name'][1:]:
-                            for _name in name.split("\n"):
+                        for _name in unquie_name:
+                            if _name != "":
                                 cursor.execute("""
-                                    INSERT INTO ransomware_alias (parent_id, alias)
-                                    VALUES (%s, %s)
-                                """, (uid, _name))
+                                        INSERT INTO ransomware_alias (parent_id, alias)
+                                        VALUES (%s, %s)
+                                    """, (uid, _name))
 
                         # Resources
                         if 'resources' in obj:
                             for resources in obj['resources']:
-                                cursor.execute("""
-                                    INSERT INTO ransomware_resources (parent_id, resources)
-                                    VALUES (%s, %s)
-                                """, (uid, resources))
+                                if resources != "":
+                                    cursor.execute("""
+                                        INSERT INTO ransomware_resources (parent_id, resources)
+                                        VALUES (%s, %s)
+                                    """, (uid, resources))
 
                         # Extensions
                         extensions = None if 'extensions' not in obj else obj['extensions']
                         if extensions is not None:
                             for ext in extensions.split("\n"):
-                                cursor.execute("""
-                                    INSERT INTO ransomware_ext (parent_id, ext)
-                                    VALUES (%s, %s)
-                                """, (uid, ext))
+                                if ext != "":
+                                    cursor.execute("""
+                                        INSERT INTO ransomware_ext (parent_id, ext)
+                                        VALUES (%s, %s)
+                                    """, (uid, ext))
 
                         # Extension Pattern
                         extensionPattern = None if 'extensionPattern' not in obj else obj['extensionPattern']
                         if extensionPattern is not None:
                             for ext_patern in extensionPattern.split("\n"):
-                                cursor.execute("""
-                                    INSERT INTO ransomware_ext_pattern (parent_id, ext_pattern)
-                                    VALUES (%s, %s)
-                                """, (uid, ext_patern))
+                                if ext_patern != "":
+                                    cursor.execute("""
+                                        INSERT INTO ransomware_ext_pattern (parent_id, ext_pattern)
+                                        VALUES (%s, %s)
+                                    """, (uid, ext_patern))
 
                         # Notes
                         ransomNoteFilenames = None if 'ransomNoteFilenames' not in obj else obj['ransomNoteFilenames']
                         if ransomNoteFilenames is not None:
                             for notes in ransomNoteFilenames.split("\n"):
-                                cursor.execute("""
-                                    INSERT INTO ransomware_notes (parent_id, notes)
-                                    VALUES (%s, %s)
-                                """, (uid, notes))
+                                if notes != "":
+                                    cursor.execute("""
+                                        INSERT INTO ransomware_notes (parent_id, notes)
+                                        VALUES (%s, %s)
+                                    """, (uid, notes))
 
                         # Comments
                         comment = None if 'comment' not in obj else obj['comment']
                         if comment is not None:
                             for comm in comment.split("\n"):
-                                cursor.execute("""
-                                    INSERT INTO ransomware_comments (parent_id, comments)
-                                    VALUES (%s, %s)
-                                """, (uid, comm))
+                                if comm != "":
+                                    cursor.execute("""
+                                        INSERT INTO ransomware_comments (parent_id, comments)
+                                        VALUES (%s, %s)
+                                    """, (uid, comm))
 
                         # Algo
                         encryptionAlgorithm = None if 'encryptionAlgorithm' not in obj else obj['encryptionAlgorithm']
                         if encryptionAlgorithm is not None:
                             for algo in encryptionAlgorithm.split("\n"):
-                                cursor.execute("""
-                                    INSERT INTO ransomware_algo (parent_id, algo)
-                                    VALUES (%s, %s)
-                                """, (uid, algo))
+                                if algo != "":
+                                    cursor.execute("""
+                                        INSERT INTO ransomware_algo (parent_id, algo)
+                                        VALUES (%s, %s)
+                                    """, (uid, algo))
 
                         # Commit the transaction
                         connection.commit()

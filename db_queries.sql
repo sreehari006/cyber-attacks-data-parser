@@ -16,6 +16,7 @@ CREATE TABLE attacks_repo.ransomware (
 );
 
 CREATE TABLE attacks_repo.ransomware_alias (
+    uid SERIAL PRIMARY KEY,
     parent_id INT NOT NULL,
     alias TEXT,
     FOREIGN KEY (parent_id) REFERENCES attacks_repo.ransomware (uid),
@@ -23,6 +24,7 @@ CREATE TABLE attacks_repo.ransomware_alias (
 );
 
 CREATE TABLE attacks_repo.ransomware_ext (
+    uid SERIAL PRIMARY KEY,
     parent_id INT NOT NULL,
     ext TEXT,
     FOREIGN KEY (parent_id) REFERENCES attacks_repo.ransomware (uid),
@@ -30,6 +32,7 @@ CREATE TABLE attacks_repo.ransomware_ext (
 );
 
 CREATE TABLE attacks_repo.ransomware_ext_pattern (
+    uid SERIAL PRIMARY KEY,
     parent_id INT NOT NULL,
     ext_pattern TEXT,
     FOREIGN KEY (parent_id) REFERENCES attacks_repo.ransomware (uid),
@@ -37,6 +40,7 @@ CREATE TABLE attacks_repo.ransomware_ext_pattern (
 );
 
 CREATE TABLE attacks_repo.ransomware_notes (
+    uid SERIAL PRIMARY KEY,
     parent_id INT NOT NULL,
     notes TEXT,
     FOREIGN KEY (parent_id) REFERENCES attacks_repo.ransomware (uid),
@@ -44,6 +48,7 @@ CREATE TABLE attacks_repo.ransomware_notes (
 );
 
 CREATE TABLE attacks_repo.ransomware_comments (
+    uid SERIAL PRIMARY KEY,
     parent_id INT NOT NULL,
     comments TEXT,
     FOREIGN KEY (parent_id) REFERENCES attacks_repo.ransomware (uid),
@@ -51,6 +56,7 @@ CREATE TABLE attacks_repo.ransomware_comments (
 );
 
 CREATE TABLE attacks_repo.ransomware_algo (
+    uid SERIAL PRIMARY KEY,
     parent_id INT NOT NULL,
     algo TEXT,
     FOREIGN KEY (parent_id) REFERENCES attacks_repo.ransomware (uid),
@@ -58,6 +64,7 @@ CREATE TABLE attacks_repo.ransomware_algo (
 );
 
 CREATE TABLE attacks_repo.ransomware_resources (
+    uid SERIAL PRIMARY KEY,
     parent_id INT NOT NULL,
     resources TEXT,
     FOREIGN KEY (parent_id) REFERENCES attacks_repo.ransomware (uid),
